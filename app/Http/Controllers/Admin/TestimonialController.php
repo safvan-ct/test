@@ -9,24 +9,31 @@ use Illuminate\Support\Facades\Storage;
 
 class TestimonialController extends Controller
 {
+    public $active = 'website';
+    public $active_sub = 'testimonials';
+
     public function index()
     {
         $testimonial = Testimonial::Orderby('id', 'desc')->get();
- 
-        return view('admin.web.testimonial')->with('testimonials', $testimonial );
+
+        return view('admin.web.testimonial')
+            ->with('testimonials', $testimonial)
+            ->with('active', $this->active)
+            ->with('active_sub', $this->active_sub);
     }
+
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required',
             'designation' => 'required',
             'quote' => 'required',
-            'image' => 'required|mimes:jpg,jpeg,png'
+            'image' => 'required|mimes:jpg,jpeg,png',
         ]);
- 
-        $filename = time().'.'.$request->file('image')->extension();
+
+        $filename = time() . '.' . $request->file('image')->extension();
         $request->image->storeAs('uploads/testimonial', $filename, 'public');
-        $filename = 'uploads/testimonial/'.$filename;
+        $filename = 'uploads/testimonial/' . $filename;
 
         Testimonial::create([
             'name' => $request->name,
@@ -34,7 +41,7 @@ class TestimonialController extends Controller
             'quote' => $request->quote,
             'image' => $filename,
         ]);
-   
+
         return redirect(route('testimonial.index'))->with('success', 'Added Successfully');
     }
 
@@ -50,10 +57,10 @@ class TestimonialController extends Controller
 
         if ($request->hasFile('image')) {
             $request->validate(['image' => 'mimes:jpg,jpeg,png']);
-            Storage::delete('/public/'.$testimonial->image);
-            $filename = time().'.'.$request->file('image')->extension();
+            Storage::delete('/public/' . $testimonial->image);
+            $filename = time() . '.' . $request->file('image')->extension();
             $request->image->storeAs('uploads/testimonial', $filename, 'public');
-            $filename = 'uploads/testimonial/'.$filename;
+            $filename = 'uploads/testimonial/' . $filename;
         } else {
             $filename = $testimonial->image;
         }
@@ -72,7 +79,7 @@ class TestimonialController extends Controller
     {
         $testimonial = Testimonial::find($id);
 
-        Storage::delete('/public/'.$testimonial->image);
+        Storage::delete('/public/' . $testimonial->image);
         Testimonial::destroy($testimonial->id);
 
         return redirect(route('testimonial.index'))->with('success', 'Deleted Successfully');

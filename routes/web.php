@@ -125,91 +125,68 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
 
     Route::get('home/{type?}', [Admin\AdminHomeController::class, 'index'])->name('dashboard');
 
-    Route::resource('seo', Admin\SeoController::class, ['names' => 'seo']);
-    Route::resource('News', Admin\NewsController::class, ['names' => 'news']);
-    Route::resource('Privacy Policy', Admin\PrivacypolicyController::class, ['names' => 'privacy']);
-    
-    
-    Route::resource('Delivery_Policy', Admin\DeliverypolicyController::class, ['names' => 'deliverys']);
-    
-    Route::resource('Terms of Use', Admin\TermsController::class, ['names' => 'terms']);
-    Route::resource('RefundPolicy', Admin\RefundController::class, ['names' => 'refund']);
-    Route::resource('Brand', Admin\BrandController::class, ['names' => 'brand']);
-    Route::resource('Accounts', Admin\AccountController::class, ['names' => 'accounts']);
-
+    // Website managment
     Route::resource('Slider', Admin\SliderController::class, ['names' => 'slider']);
+    Route::resource('BestsaleSlider', Admin\BestsalesliderController::class, ['names' => 'bestsaleslider']);
     Route::resource('Flash', Admin\FlashController::class, ['names' => 'flash']);
-    Route::resource('Abousus', Admin\AboutusController::class, ['names' => 'aboutus']);
-    
-    Route::resource('Award', Admin\AwardimageController::class, ['names' => 'awardimage']);
-    
-    Route::resource('SocialMedia', Admin\SocialMediaController::class, ['names' => 'socialmedia']);
-    
-    Route::resource('Ingredient', Admin\IngredientsController::class, ['names' => 'ingredient']);
+    Route::resource('News', Admin\NewsController::class, ['names' => 'news']);
+    Route::resource('Advertisement', Admin\AdvController::class, ['names' => 'adv']);
+    Route::resource('offer-banner', Admin\OfferBannerController::class, ['names' => 'offer']);
     Route::resource('homeabout', Admin\HomeaboutController::class, ['names' => 'homeabout']);
-    Route::resource('homequiz', Admin\HomequizController::class, ['names' => 'homequiz']);
-
     Route::resource('homecat1', Admin\Homecat1Controller::class, ['names' => 'homecat1']);
     Route::post('homecat1/{id}', [Admin\Homecat1Controller::class, 'update'])->name('homecat1s.update');
-
     Route::resource('homecat2', Admin\Homecat2Controller::class, ['names' => 'homecat2']);
     Route::post('homecat2/{id}', [Admin\Homecat2Controller::class, 'update'])->name('homecat2s.update');
-
-
     Route::resource('homesubcat1', Admin\Homesubcat1Controller::class, ['names' => 'homesubcat1']);
     Route::post('homesubcat1/{id}', [Admin\Homesubcat1Controller::class, 'update'])->name('homesubcat1s.update');
-
-
-       Route::resource('Advertisement', Admin\AdvController::class, ['names' => 'adv']);
-
-       Route::resource('Categories', Admin\GameController::class, ['names' => 'cats']);
-    Route::resource('credentials', Admin\CredentialController::class, ['names' => 'credentials']);
-
-    Route::post('Credentials/{id}', [Admin\CredentialController::class, 'store'])->name('credentials_store');
-
-     Route::get('/get-subcat/{id}', [AjaxController::class, 'subcat'])->name('getsubCat');
-
-
-     Route::get('/get-subsubcat/{id}', [AjaxController::class, 'getproduct'])->name('getsubsubCat');
-
-     Route::get('/get-product/{id}', [AjaxController::class, 'getproduct'])->name('getproducts');
-
-
-    Route::post('Account/{id}', [Admin\AccountController::class, 'update'])->name('accounts_update');
-    Route::post('Privacy policyyy/{id}', [Admin\PrivacypolicyController::class, 'update'])->name('privacy_update');
-    Route::post('Terms of use/{id}', [Admin\TermsController::class, 'update'])->name('terms_update');
-    Route::post('Refunt policyyy/{id}', [Admin\RefundController::class, 'update'])->name('refund_update');
-    Route::resource('offer-banner', Admin\OfferBannerController::class, ['names' => 'offer']);
+    Route::resource('Aboutsus', Admin\AboutusController::class, ['names' => 'aboutus']);
+    Route::resource('Award', Admin\AwardimageController::class, ['names' => 'awardimage']);
+    Route::resource('homequiz', Admin\HomequizController::class, ['names' => 'homequiz']);
     Route::resource('testimonial', Admin\TestimonialController::class, ['names' => 'testimonial']);
-    Route::get('/user', [Admin\ListController::class, 'user'])->name('user.list');
-    // Route::get('/review', [Admin\ListController::class, 'review'])->name('review.list');
-    
-    Route::resource('Review', Admin\ReviewController::class, ['names' => 'reviews']);
-    
-    
-    Route::get('/Userban/{id}', [Admin\ListController::class, 'userban'])->name('userban');
-    
-    Route::get('/Userunban/{id}', [Admin\ListController::class, 'userunban'])->name('userunban');
-    
-    Route::get('/approve/{id}', [Admin\ListController::class, 'approve'])->name('review.approve');
+    Route::resource('SocialMedia', Admin\SocialMediaController::class, ['names' => 'socialmedia']);
+    Route::resource('seo', Admin\SeoController::class, ['names' => 'seo']);
+    Route::resource('Delivery_Policy', Admin\DeliverypolicyController::class, ['names' => 'deliverys']);
+    Route::resource('Privacy Policy', Admin\PrivacypolicyController::class, ['names' => 'privacy']);
+    Route::post('Privacy policyyy/{id}', [Admin\PrivacypolicyController::class, 'update'])->name('privacy_update');
+    Route::resource('RefundPolicy', Admin\RefundController::class, ['names' => 'refund']);
+    Route::post('Refunt policyyy/{id}', [Admin\RefundController::class, 'update'])->name('refund_update');
+    Route::resource('Terms of Use', Admin\TermsController::class, ['names' => 'terms']);
+    Route::post('Terms of use/{id}', [Admin\TermsController::class, 'update'])->name('terms_update');
 
+    // Product managment
+    Route::resource('Categories', Admin\GameController::class, ['names' => 'cats']);
     Route::resource('category', Admin\CategoryController::class, ['names' => 'category']);
-    Route::resource('sub-cat', Admin\SubcatController::class, ['names' => 'subcat']);
-
-    Route::resource('sub-category', Admin\SubCategoryController::class, ['names' => 'subcategory']);
-    Route::resource('size', Admin\SizeController::class, ['names' => 'size']);
-    Route::resource('color', Admin\ColorController::class, ['names' => 'color']);
-    Route::resource('product', Admin\ProductController::class, ['names' => 'product']);
-
-    Route::resource('coupon-code', Admin\CouponCodeController::class, ['names' => 'coupon']);
-
-
-    Route::resource('BestsaleSlider', Admin\BestsalesliderController::class, ['names' => 'bestsaleslider']);
+    Route::resource('Accounts', Admin\AccountController::class, ['names' => 'accounts']);
+    Route::post('Account/{id}', [Admin\AccountController::class, 'update'])->name('accounts_update');
+    Route::resource('Ingredient', Admin\IngredientsController::class, ['names' => 'ingredient']);
+    Route::resource('Review', Admin\ReviewController::class, ['names' => 'reviews']);
+    Route::get('/approve/{id}', [Admin\ListController::class, 'approve'])->name('review.approve');
     Route::resource('Faq', Admin\FaqController::class, ['names' => 'faq']);
 
-    Route::get('/order-list', [Admin\ListController::class, 'order'])->name('order.list');
+    // Order managment
     Route::get('/neworder-list', [Admin\ListController::class, 'neworder'])->name('neworder.list');
     Route::get('/shippedorder-list', [Admin\ListController::class, 'shippedorder'])->name('shippedorder.list');
+    Route::get('/order-list', [Admin\ListController::class, 'order'])->name('order.list');
     Route::get('/order-status/{id}/{type}', [Admin\ListController::class, 'status'])->name('order.status');
 
+    // Users
+    Route::get('/user', [Admin\ListController::class, 'user'])->name('user.list');
+    Route::get('/Userban/{id}', [Admin\ListController::class, 'userban'])->name('userban');
+    Route::get('/Userunban/{id}', [Admin\ListController::class, 'userunban'])->name('userunban');
+
+    // Ajax functions
+    Route::get('/get-subcat/{id}', [AjaxController::class, 'subcat'])->name('getsubCat');
+    Route::get('/get-subsubcat/{id}', [AjaxController::class, 'getproduct'])->name('getsubsubCat');
+    Route::get('/get-product/{id}', [AjaxController::class, 'getproduct'])->name('getproducts');
+
+    //unknown
+    // Route::resource('credentials', Admin\CredentialController::class, ['names' => 'credentials']);
+    // Route::post('Credentials/{id}', [Admin\CredentialController::class, 'store'])->name('credentials_store');
+    // Route::resource('sub-cat', Admin\SubcatController::class, ['names' => 'subcat']);
+    // Route::resource('sub-category', Admin\SubCategoryController::class, ['names' => 'subcategory']);
+    // Route::resource('Brand', Admin\BrandController::class, ['names' => 'brand']);
+    // Route::resource('size', Admin\SizeController::class, ['names' => 'size']);
+    // Route::resource('color', Admin\ColorController::class, ['names' => 'color']);
+    // Route::resource('product', Admin\ProductController::class, ['names' => 'product']);
+    // Route::resource('coupon-code', Admin\CouponCodeController::class, ['names' => 'coupon']);
 });

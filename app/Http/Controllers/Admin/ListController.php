@@ -5,46 +5,45 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\Order;
 use App\Models\Admin\Account;
-use App\Models\Review;
 use App\Models\User;
 use App\Models\UserOrder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class ListController extends Controller
 {
+    public $active = 'order';
+    public $active_sub = '';
+
     public function user()
     {
+        $this->active = 'users';
         $users = User::Orderby('id', 'desc')->get();
-        return view('admin.web.user-list', compact('users'));
+        return view('admin.web.user-list')
+            ->with('users', $users)
+            ->with('active', $this->active)
+            ->with('active_sub', $this->active_sub);
     }
-    
-    
-      public function userban($id)
+
+    public function userban($id)
     {
-         $user = User::find($id);
-        
-          $user->update([
+        $user = User::find($id);
 
-                    'ban' => 1,
-                ]);
+        $user->update([
+            'ban' => 1,
+        ]);
 
-      return redirect()->back()->with('status', 'User Baned Successfully');
-        
+        return redirect()->back()->with('status', 'User Baned Successfully');
     }
-    
-       public function userunban($id)
+
+    public function userunban($id)
     {
-        
-         $user = User::find($id);
-         
-          $user->update([
+        $user = User::find($id);
 
-                    'ban' => 0,
-                ]);
+        $user->update([
+            'ban' => 0,
+        ]);
 
-      return redirect()->back()->with('status', 'User UnBaned Successfully');
-        
+        return redirect()->back()->with('status', 'User UnBaned Successfully');
     }
 
     // public function review()
@@ -70,56 +69,68 @@ class ListController extends Controller
 
     public function neworder()
     {
-
-            $products=Account::orderby('id', 'desc')->get();
-             $orders = UserOrder::Orderby('id', 'desc')-> where('user_orders.status', "new")->get(['user_orders.*']);
-            $users=User::Orderby('id', 'desc')->get();
-            // $orders = UserOrder::join('users','users.id', '=','user_orders.user_id')->Orderby('id', 'desc')->where('user_orders.status', "new")->get(['user_orders.*', 'users.name','users.email']);
-            return view('admin.new-order', compact('orders','products','users'));
+        $this->active_sub = 'new';
+        $products = Account::orderby('id', 'desc')->get();
+        $orders = UserOrder::Orderby('id', 'desc')->where('user_orders.status', "new")->get(['user_orders.*']);
+        $users = User::Orderby('id', 'desc')->get();
+        // $orders = UserOrder::join('users','users.id', '=','user_orders.user_id')->Orderby('id', 'desc')->where('user_orders.status', "new")->get(['user_orders.*', 'users.name','users.email']);
+        return view('admin.new-order')
+            ->with('orders', $orders)
+            ->with('products', $products)
+            ->with('users', $users)
+            ->with('active', $this->active)
+            ->with('active_sub', $this->active_sub);
 
     }
 
- public function shippedorder()
+    public function shippedorder()
     {
-
-            $products=Account::orderby('id', 'desc')->get();
-            $orders = UserOrder::Orderby('id', 'desc')-> where('user_orders.status', "shipped")->get(['user_orders.*']);
-            $users=User::Orderby('id', 'desc')->get();
-           // $orders = UserOrder::join('users','users.id', '=','user_orders.user_id')->Orderby('id', 'desc')->where('user_orders.status', "shipped")->get(['user_orders.*', 'users.name','users.email']);
-            return view('admin.new-order', compact('orders','products','users'));
+        $this->active_sub = 'shipped';
+        $products = Account::orderby('id', 'desc')->get();
+        $orders = UserOrder::Orderby('id', 'desc')->where('user_orders.status', "shipped")->get(['user_orders.*']);
+        $users = User::Orderby('id', 'desc')->get();
+        // $orders = UserOrder::join('users','users.id', '=','user_orders.user_id')->Orderby('id', 'desc')->where('user_orders.status', "shipped")->get(['user_orders.*', 'users.name','users.email']);
+        return view('admin.new-order')
+            ->with('orders', $orders)
+            ->with('products', $products)
+            ->with('users', $users)
+            ->with('active', $this->active)
+            ->with('active_sub', $this->active_sub);
 
     }
-    
-     public function order()
+
+    public function order()
     {
-
-            $products=Account::orderby('id', 'desc')->get();
-               $orders = UserOrder::Orderby('id', 'desc')-> where('user_orders.status', "delivered")->get(['user_orders.*']);
-            $users=User::Orderby('id', 'desc')->get();
-            //$orders = UserOrder::join('users','users.id', '=','user_orders.user_id')->Orderby('id', 'desc')->where('user_orders.status', "delivered")->get(['user_orders.*', 'users.name','users.email']);
-            return view('admin.new-order', compact('orders','products','users'));
+        $this->active_sub = 'order';
+        $products = Account::orderby('id', 'desc')->get();
+        $orders = UserOrder::Orderby('id', 'desc')->where('user_orders.status', "delivered")->get(['user_orders.*']);
+        $users = User::Orderby('id', 'desc')->get();
+        //$orders = UserOrder::join('users','users.id', '=','user_orders.user_id')->Orderby('id', 'desc')->where('user_orders.status', "delivered")->get(['user_orders.*', 'users.name','users.email']);
+        return view('admin.new-order')
+            ->with('orders', $orders)
+            ->with('products', $products)
+            ->with('users', $users)
+            ->with('active', $this->active)
+            ->with('active_sub', $this->active_sub);
 
     }
-    
-    
+
     public function status($id, $type)
     {
-        if($type == 'shipped')
-        {
+        if ($type == 'shipped') {
             $date = date('Y-m-d h:s:i');
             $order = UserOrder::findOrFail($id);
             $order->update(['status' => 'shipped', 'shipped_at' => $date]);
             $amountToBePaid = $order->pay_amount;
 
             $subject = 'Order shipped';
-            $message = 'Thanks for shopping with us! Your order is shipped and will be delivered shortly.  Bill Amount : $'.$amountToBePaid.'/-';
-           Mail::to($order->user->email)->send(new Order($message, $subject));
+            $message = 'Thanks for shopping with us! Your order is shipped and will be delivered shortly.  Bill Amount : $' . $amountToBePaid . '/-';
+            Mail::to($order->user->email)->send(new Order($message, $subject));
 
             return back()->with('success', 'Order shipped Successfully');
         }
 
-        if($type == 'delivered')
-        {
+        if ($type == 'delivered') {
             $order = UserOrder::findOrFail($id);
             $order->update(['status' => 'delivered']);
 

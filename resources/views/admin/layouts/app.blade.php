@@ -32,7 +32,8 @@
             <!-- User profile start -->
             <div class="sidebar-user-details">
                 <div class="user-profile">
-                    <img src="{{ asset('/storage/'.auth()->guard('admin')->user()->image) }}" class="profile-thumb" alt="Profile Image">
+                    <img src="{{ asset('/storage/' .auth()->guard('admin')->user()->image) }}" class="profile-thumb"
+                        alt="Profile Image">
                 </div>
 
                 <h6 class="profile-name text-capitalize">
@@ -40,11 +41,13 @@
                 </h6>
 
                 <div class="profile-actions">
-                    <a href="{{ route('profile.index') }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Settings">
+                    <a href="{{ route('profile.index') }}" data-toggle="tooltip" data-placement="top" title=""
+                        data-original-title="Settings">
                         <i class="icon-settings1"></i>
                     </a>
 
-                    <a href="{{ route('admin.logout') }}" class="red" data-toggle="tooltip" data-placement="top" title="" data-original-title="Logout">
+                    <a href="{{ route('admin.logout') }}" class="red" data-toggle="tooltip" data-placement="top"
+                        title="" data-original-title="Logout">
                         <i class="icon-power1"></i>
                     </a>
                 </div>
@@ -52,73 +55,85 @@
             <!-- User profile end -->
 
             <!-- Sidebar content start -->
-            <div class="sidebar-content" >
+            <div class="sidebar-content">
 
                 <!-- sidebar menu start -->
                 <div class="sidebar-menu">
                     <ul>
-                        <li>
-                            <a href="{{ route('dashboard')}}">
+                        <li class="{{ $active == 'dashboard' ? 'active' : '' }}">
+                            <a href="{{ route('dashboard') }}">
                                 <i class="icon-home2"></i>
                                 <span class="menu-text">Dashboards</span>
                             </a>
                         </li>
 
-                        <li class="sidebar-dropdown">
+                        <li class="sidebar-dropdown {{ $active == 'website' ? 'active' : '' }}">
                             <a href="#">
                                 <i class="icon-layers2"></i>
                                 <span class="menu-text">Website Management</span>
                             </a>
-                          <div class="sidebar-submenu">
+                            <div class="sidebar-submenu active">
                                 <ul>
+                                    <li><a href="{{ route('slider.index') }}">Home Slider</a></li>
+                                    <li><a href="{{ route('bestsaleslider.index') }}">Product Slider</a></li>
+                                    <li><a href="{{ route('flash.index') }}">Flash News</a></li>
+                                    <li><a href="{{ route('news.index') }}">Blogs</a></li>
+                                    <li><a href="{{ route('adv.index') }}">Offer Banner</a></li>
+                                    <li><a href="{{ route('homeabout.index') }}">Home about</a></li>
+                                    <li><a href="{{ route('homecat1.index') }}">Home category1</a></li>
+                                    <li><a href="{{ route('homecat2.index') }}">Home category2</a></li>
+                                    <li><a href="{{ route('homesubcat1.index') }}">Home Subcategory</a></li>
+                                    <li><a href="{{ route('aboutus.index') }}">About Us</a></li>
+                                    <li><a href="{{ route('awardimage.index') }}">Award Images</a></li>
+                                    <li><a href="{{ route('homequiz.index') }}">Home Quiz</a></li>
+                                    <li><a href="{{ route('testimonial.index') }}">Testimonials</a></li>
+                                    <li><a href="{{ route('socialmedia.index') }}">Social Media</a></li>
                                     <li><a href="{{ route('seo.index') }}">Seo</a></li>
-                                    <!--<li><a href="{{ route('news.index') }}">News & Events</a></li>-->
+                                    <li><a href="{{ route('deliverys.index') }}">Delivery Policy</a></li>
                                     <li><a href="{{ route('privacy.index') }}">Privacy Policy</a></li>
                                     <li><a href="{{ route('refund.index') }}">Refund Policy</a></li>
                                     <li><a href="{{ route('terms.index') }}">Terms Of Use</a></li>
-
                                 </ul>
                             </div>
                         </li>
 
-                        <li class="sidebar-dropdown">
+                        <li class="sidebar-dropdown {{ $active == 'product' ? 'active' : '' }}">
                             <a href="#">
                                 <i class="icon-box"></i>
                                 <span class="menu-text">Product Management</span>
                             </a>
                             <div class="sidebar-submenu">
                                 <ul>
-                                     <li><a href="{{ route('cats.index') }}">Category</a></li>
-                                     <li><a href="{{ route('category.index') }}">Sub Category</a></li>
-                                     
-                                     <li><a href="{{ route('faq.index') }}">Faq</a></li>
-                                   {{-- <li><a href="{{ route('brand.index') }}">Brand</a></li>--}}
-                                    <li><a href="{{ route('accounts.index') }}">Product</a></li> 
-
+                                    <li><a href="{{ route('cats.index') }}">Category</a></li>
+                                    <li><a href="{{ route('category.index') }}">Sub Category</a></li>
+                                    <li><a href="{{ route('accounts.index') }}">Product</a></li>
+                                    <li><a href="{{ route('ingredient.index') }}">Products Ingredient</a></li>
+                                    <li><a href="{{ route('reviews.index') }}">Reviews</a></li>
+                                    <li><a href="{{ route('faq.index') }}">Faq</a></li>
                                 </ul>
                             </div>
                         </li>
 
-
-                             <li class="sidebar-dropdown">
+                        <li class="sidebar-dropdown {{ $active == 'order' ? 'active' : '' }}">
                             <a href="#">
                                 <i class="icon-box"></i>
                                 <span class="menu-text">Order Management</span>
                             </a>
                             <div class="sidebar-submenu">
                                 <ul>
-                                     <li><a href="{{ route('neworder.list') }}">New Order</a></li>
-                                   
+                                    <li><a href="{{ route('neworder.list') }}">New Order</a></li>
                                     <li><a href="{{ route('shippedorder.list') }}">Shipped Order</a></li>
-                                    <li><a href="{{ route('order.list') }}">Delivered Order</a></li> 
-
+                                    <li><a href="{{ route('order.list') }}">Delivered Order</a></li>
                                 </ul>
                             </div>
                         </li>
-                         
-                        
 
-
+                        <li class="{{ $active == 'users' ? 'active' : '' }}">
+                            <a href="{{ route('user.list') }}">
+                                <i class="icon-user"></i>
+                                <span class="menu-text">Users</span>
+                            </a>
+                        </li>
 
                     </ul>
                 </div>
@@ -139,13 +154,15 @@
 
                         <li class="dropdown user-settings">
                             <a href="#" id="userSettings" data-toggle="dropdown" aria-haspopup="true">
-                                <img src="{{ asset('/storage/'.auth()->guard('admin')->user()->image) }}" class="user-avatar" alt="Logo" >
+                                <img src="{{ asset('/storage/' .auth()->guard('admin')->user()->image) }}"
+                                    class="user-avatar" alt="Logo">
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userSettings">
                                 <div class="header-profile-actions">
                                     <div class="header-user-profile">
                                         <div class="header-user">
-                                            <img src="{{ asset('/storage/'.auth()->guard('admin')->user()->image) }}" alt="Logo">
+                                            <img src="{{ asset('/storage/' .auth()->guard('admin')->user()->image) }}"
+                                                alt="Logo">
                                         </div>
                                         <h5 class="text-capitalize">
                                             {{ auth()->guard('admin')->user()->name }}
@@ -155,7 +172,7 @@
                                     <a href="{{ route('profile.index') }}">
                                         <i class="icon-user1"></i> My Profile
                                     </a>
-                                    <a href="{{ route('profile.edit', auth()->guard('admin')->user()->id) }}">
+                                    <a href="{{ route('profile.edit',auth()->guard('admin')->user()->id) }}">
                                         <i class="icon-vpn_key"></i> Password Change
                                     </a>
                                     <a href="{{ route('admin.logout') }}">
