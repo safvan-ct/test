@@ -233,7 +233,18 @@
         });
     </script>
 
+    <!-- Toastr -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+
+    <!-- Sweetalert -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="{{ asset('admin_assets/js/main.js') }}"></script>
+    <script src="{{ asset('admin_assets/js/custom.js') }}"></script>
+
+    @yield('scripts')
 </body>
 
 </html>

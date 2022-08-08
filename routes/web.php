@@ -126,7 +126,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function(){
     Route::get('home/{type?}', [Admin\AdminHomeController::class, 'index'])->name('dashboard');
 
     // Website managment
-    Route::resource('Slider', Admin\SliderController::class, ['names' => 'slider']);
+    Route::get('/slider', [Admin\SliderController::class, 'index'])->name('slider.index');
+    Route::get('/slider/results', [Admin\SliderController::class, 'result'])->name('slider.result');
+    Route::post('/slider/create-update', [Admin\SliderController::class, 'createUpdate'])->name('slider.create.update');
+
     Route::resource('BestsaleSlider', Admin\BestsalesliderController::class, ['names' => 'bestsaleslider']);
     Route::resource('Flash', Admin\FlashController::class, ['names' => 'flash']);
     Route::resource('News', Admin\NewsController::class, ['names' => 'news']);

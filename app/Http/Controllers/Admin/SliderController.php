@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Slider;
+use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,44 +15,43 @@ class SliderController extends Controller
 
     public function index()
     {
-        $slider = Slider::Orderby('id', 'desc')->get();
         return view('admin.web.slider')
-            ->with('sliders', $slider)
             ->with('active', $this->active)
             ->with('active_sub', $this->active_sub);
     }
 
-    public function store(Request $request)
+    public function result()
     {
-        $request->validate([
-            'image' => 'required|mimes:jpg,jpeg,png,webp',
-        ]);
+        $slider = Slider::Orderby('id', 'desc')->get();
+        return Datatables::of($slider)
+            ->addIndexColumn()
+            ->addColumn('image', function ($result) {
+                $path = asset('/storage/uploads/slider/' . $result->image);
+                return "<img src='{$path}' style='width: 100px; height: 50px'>";
+            })
 
-        $filename = time() . '.' . $request->file('image')->extension();
-        $request->image->storeAs('uploads/slider', $filename, 'public');
+            ->addColumn('action', function ($result) {
+                $path = asset('/storage/uploads/slider/' . $result->image);
+                $btn = "<button type='button' class='btn btn-primary' onclick='createUpdateModal({$result->id})'>Edit</button>
+                    <span style='display: none' id='title_{$result->id}'>{$result->title}</span>
+                    <span style='display: none' id='sub_title_{$result->id}'>{$result->sub_title}</span>
+                    <span style='display: none' id='link_{$result->id}'>{$result->link}</span>
+                    <span style='display: none' id='image_{$result->id}'>{$path}</span>";
 
-        $data = [
-            'title' => $request->title,
-            'sub_title' => $request->sub_title,
-            'link' => $request->link,
-            'image' => $filename,
-        ];
-        Slider::create($data);
-
-        return Back()->with('success', 'added');
+                return $btn;
+            })
+            ->rawColumns(['action', 'image'])
+            ->make(true);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function createUpdate(Request $request)
     {
-        $slider = Slider::find($id);
-        $request->validate([]);
+        $slider = Slider::find($request->id);
+        if($request->id == 0){
+            $request->validate([
+                'image' => 'required|mimes:jpg,jpeg,png,webp',
+            ]);
+        }
 
         if ($request->hasFile('image')) {
             $request->validate(['image' => 'mimes:jpg,jpeg,png,webp']);
@@ -70,8 +70,7 @@ class SliderController extends Controller
         ];
 
         $slider->update($data);
-        return Back()->with('success', 'Updated Sucessfully');
-
+        return json_encode(['response' => 'success', 'message' => 'Updated Sucessfully']);
     }
 
     public function destroy($id)

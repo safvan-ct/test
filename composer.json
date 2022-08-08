@@ -14,7 +14,9 @@
         "laravel/ui": "^3.2",
         "paypal/rest-api-sdk-php": "^1.14",
         "razorpay/razorpay": "^2.8",
-        "stripe/stripe-php": "^7.88"
+        "stripe/stripe-php": "^7.88",
+        "yajra/laravel-datatables": "^1.5",
+        "yajra/laravel-datatables-oracle": "^9.21"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

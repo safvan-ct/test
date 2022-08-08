@@ -13,9 +13,7 @@
 
             <div class="col-xs-2 mb-2">
                 <a href="{{ route('dashboard', 'web') }}" class="btn btn-primary">Back</a>
-                <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add">-->
-                <!--    ADD NEW-->
-                <!--</button>-->
+                {{-- <button type="button" class="btn btn-primary" onclick="createUpdateModal(0)">ADD NEW</button> --}}
             </div>
         </div>
 
@@ -23,7 +21,7 @@
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                 <div class="table-container">
                     <div class="table-responsive">
-                        <table id="copy-print-csv" class="table custom-table">
+                        <table id="data-table" class="table custom-table w-100">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -34,36 +32,7 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach ($sliders as $slider)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-
-                                        <td>{{ $slider->title }}</td>
-                                        <td>{{ $slider->sub_title }}</td>
-                                        <td>{{ $slider->link }}</td>
-                                        <td>
-                                            <img src="{{ asset('/storage/uploads/slider/' . $slider->image) }}"
-                                                style="width: 100px; height: 50px">
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                data-target="#edit{{ $slider->id }}">Edit</button>
-
-                                            {{-- <a class="delete_btn btn btn-danger btn-block" data-action="{{ $slider->id }}"
-                                                message="Delete the slider">
-                                                Delete
-                                            </a>
-
-                                            <form style="display: none" id="{{ $slider->id }}" method="post"
-                                                action="{{ route('slider.destroy', $slider) }}">
-                                                @csrf @method('delete')
-                                            </form> --}}
-                                        </td>
-
-                                    </tr>
-                                @endforeach
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
@@ -71,113 +40,144 @@
         </div>
     </div>
 
-    <div class="modal fade" id="add" tabindex="-1" role="dialog">
+    <div class="modal fade" id="create_update" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">New slider</h5>
+                    <h5 class="modal-title" id="heading"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
 
-                <form action="{{ route('slider.store') }}" method="post" enctype="multipart/form-data">
+                <form action="" method="post" enctype="multipart/form-data" id="createUpdateForm">
                     @csrf
+                    <input type="hidden" class="form-control" name="id" id="id">
                     <div class="modal-body">
                         <div class="form-group row">
-
-
                             <div class="col-md-6 mb-3">
                                 <label>Title</label>
-                                <input type="text" class="form-control" name="title"
-                                    value="{{ old('title') }}" >
-                                @error('title')<span class="text-danger">{{ $message }}</span>@enderror
+                                <input type="text" class="form-control" name="title" id="title">
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label>Sub Title</label>
-                                <input type="text" class="form-control" name="sub_title"
-                                    value="{{ old('sub_title') }}" >
-                                @error('sub_title')<span class="text-danger">{{ $message }}</span>@enderror
+                                <input type="text" class="form-control" name="sub_title" id="sub_title">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label>Link</label>
-                                <input type="text" class="form-control" name="link"
-                                    value="{{ old('link') }}" required>
-                                @error('link')<span class="text-danger">{{ $message }}</span>@enderror
+                                <input type="text" class="form-control" name="link" id="link" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label>Image (1920 * 720 px)</label>
-                                <input type="file" class="form-control" name="image" required>
-                                @error('image')<span class="text-danger">{{ $message }}</span>@enderror
+                                <input type="file" class="form-control" name="image" id="file">
+                                <img src="" style="width: 100px; height: 50px; margin-top: 20px;" id="image">
                             </div>
                         </div>
                     </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-primary" onclick="createUpdatePost()">Save</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    @foreach ($sliders as $slider_edit)
-        <div class="modal fade" id="edit{{ $slider_edit->id }}" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Edit slider</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+@endsection
 
-                    <form action="{{ route('slider.update', $slider_edit) }}" method="post"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <div class="modal-body">
-                            <div class="form-group row">
+@section('scripts')
+    <script type="text/javascript">
+        $(function() {
+            results();
+        });
 
-                                <div class="col-md-6 mb-3">
-                                    <label>Title</label>
-                                    <input type="text" class="form-control" name="title"
-                                        value="{{ $slider_edit->title }}">
-                                    @error('title')<span class="text-danger">{{ $message }}</span>@enderror
-                                </div>
+        function results() {
+            $('#data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                ajax: "{{ route('slider.result') }}",
+                columns: [
+                    {
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'title',
+                        name: 'title'
+                    },
+                    {
+                        data: 'sub_title',
+                        name: 'sub_title'
+                    },
+                    {
+                        data: 'link',
+                        name: 'link'
+                    },
+                    {
+                        data: 'image',
+                        name: 'image',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
+            });
+        }
 
-                                <div class="col-md-6 mb-3">
-                                    <label>Sub Title</label>
-                                    <input type="text" class="form-control" name="sub_title"
-                                        value="{{ $slider_edit->sub_title }}">
-                                    @error('second_title')<span class="text-danger">{{ $message }}</span>@enderror
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label>Link</label>
-                                    <input type="text" class="form-control" name="link"
-                                        value="{{ $slider_edit->link }}">
-                                    @error('link')<span class="text-danger">{{ $message }}</span>@enderror
-                                </div>
+        function createUpdateModal(id) {
+            $('#id').val(id);
+            $('#create_update').modal('toggle');
+            $('#image').hide();
+            $('#heading').html('New Slider');
+            $('#createUpdateForm')[0].reset();
 
-                                <div class="col-md-6 mb-3">
-                                    <label>Image (1920 * 720 px)</label>
-                                    <input type="file" class="form-control" name="image">
-                                    @error('image')<span class="text-danger">{{ $message }}</span>@enderror
-                                    <img src="{{ asset('/storage/uploads/slider/' . $slider_edit->image) }}"
-                                        style="width: 100px; height: 50px; margin-top: 20px;">
-                                </div>
-                            </div>
-                        </div>
+            if (id != 0) {
+                $('#heading').html('Update Slider');
+                $('#title').val($('#title_' + id).html());
+                $('#sub_title').val($('#sub_title_' + id).html());
+                $('#link').val($('#link_' + id).html());
+                $('#image').show().attr("src", $('#image_' + id).html());
+            }
+        }
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" name="case" value="insert">Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    @endforeach
+        function createUpdatePost() {
+            var url = "{{ route('slider.create.update') }}";
+            var form = $('#createUpdateForm')[0];
+
+            $.ajax({
+                url: url,
+                method: "POST",
+                data: new FormData(form),
+                dataType: 'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function(data) {
+                    if (data.response == 'success') {
+                        $('#create_update').modal('toggle');
+                        alertMessage('success', data.message)
+                        results();
+                    }
+                    else if (data.response == 'error') {
+                        alertMessage('error', data.message)
+                    }
+                },
+                error: function(data) {
+                    var errorText  = '';
+                    $.each(data.responseJSON.errors, function(index, val) {
+                        errorText += val+'<br>';
+                    });
+                    alertMessage('error', errorText)
+                }
+            });
+        }
+    </script>
 @endsection
