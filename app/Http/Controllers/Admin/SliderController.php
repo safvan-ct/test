@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin\Slider;
+use App\Models\Slider;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -15,7 +15,7 @@ class SliderController extends Controller
 
     public function index()
     {
-        return view('admin.web.slider')
+        return view('admin.slider.index')
             ->with('active', $this->active)
             ->with('active_sub', $this->active_sub);
     }
@@ -25,14 +25,17 @@ class SliderController extends Controller
         $slider = Slider::Orderby('id', 'desc')->get();
         return Datatables::of($slider)
             ->addIndexColumn()
+            ->addColumn('type', function ($result) {
+                return $result->type == 1 ? 'Home' : 'Product';
+            })
             ->addColumn('image', function ($result) {
                 $path = asset('/storage/uploads/slider/' . $result->image);
                 return "<img src='{$path}' style='width: 100px; height: 50px'>";
             })
-
             ->addColumn('action', function ($result) {
                 $path = asset('/storage/uploads/slider/' . $result->image);
                 $btn = "<button type='button' class='btn btn-primary' onclick='createUpdateModal({$result->id})'>Edit</button>
+                    <span style='display: none' id='type_{$result->id}'>{$result->type}</span>
                     <span style='display: none' id='title_{$result->id}'>{$result->title}</span>
                     <span style='display: none' id='sub_title_{$result->id}'>{$result->sub_title}</span>
                     <span style='display: none' id='link_{$result->id}'>{$result->link}</span>
@@ -46,7 +49,9 @@ class SliderController extends Controller
 
     public function createUpdate(Request $request)
     {
-        $slider = Slider::find($request->id);
+        $slider = $request->id == 0 ? new Slider : Slider::find($request->id);
+        $id = $request->id == 0 ? null : $request->id;
+
         if($request->id == 0){
             $request->validate([
                 'image' => 'required|mimes:jpg,jpeg,png,webp',
@@ -63,21 +68,14 @@ class SliderController extends Controller
         }
 
         $data = [
+            'type' => $request->type,
             'title' => $request->title,
             'link' => $request->link,
             'sub_title' => $request->sub_title,
             'image' => $filename,
         ];
 
-        $slider->update($data);
+        $slider->updateOrCreate(['id' => $id], $data);
         return json_encode(['response' => 'success', 'message' => 'Updated Sucessfully']);
-    }
-
-    public function destroy($id)
-    {
-        $slider = Slider::findOrFail($id);
-        $slider->delete();
-
-        return redirect(route('quantity.index'))->with('success', 'Deleted Successfully');
     }
 }

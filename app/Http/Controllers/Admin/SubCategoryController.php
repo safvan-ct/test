@@ -3,56 +3,78 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin\Category;
-use App\Models\Admin\SubCategory;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class SubCategoryController extends Controller
 {
+    public $active = 'product';
+    public $active_sub = 'category';
+
     public function index()
     {
-        $categories = Category::Orderby('title', 'asc')->get();
-        $datas = SubCategory::with('category')->Orderby('id', 'desc')->get();
-        return view('admin.product.sub-category', compact('categories', 'datas'));
+        return view('admin.sub-category.index')
+            ->with('active', $this->active)
+            ->with('active_sub', $this->active_sub);
     }
 
-    public function store(Request $request)
+    public function result()
     {
-        $request->validate([
-            'title' => 'required',
-            'category' => 'required'
-        ]);
- 
-        SubCategory::create([
+        $results = SubCategory::with('category')->Orderby('category_id', 'asc')->get();
+        return DataTables::of($results)
+            ->addIndexColumn()
+            ->addColumn('action', function ($result) {
+                $delete_url = route('sub.category.status', [$result->id, 2]);
+                $url = route('sub.category.status', [$result->id, $result->is_active == 1 ? 0 : 1]);
+                $text = $result->is_active == 0 ? 'Disable' : 'Enable';
+
+                $res = "<button type='button' class='btn btn-primary' onclick='createUpdateModal({$result->id})'>Edit</button>
+                    <button type='button' onclick='return confirmStatusModal(2, \"{$delete_url}\")' class='btn btn-danger'>Delete</button>
+                    <button style='display: none' type='button' onclick='return confirmStatusModal($result->is_active, \"{$url}\")' class='btn btn-info'>{$text}</button>
+                    <span style='display: none' id='category_id_{$result->id}'>{$result->category_id}</span>
+                    <span style='display: none' id='title_{$result->id}'>{$result->title}</span>
+                    <span style='display: none' id='description_{$result->id}'>{$result->description}</span>";
+
+                return $res;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    public function createUpdate(Request $request)
+    {
+        $category = $request->id == 0 ? new SubCategory : SubCategory::find($request->id);
+        $id = $request->id == 0 ? null : $request->id;
+
+        if($request->id == 0){
+            $request->validate([
+                'title' => 'required',
+                'category_id' => 'required',
+            ]);
+        }
+
+        $data = [
+            'category_id' => $request->category_id,
             'title' => $request->title,
-            'category_id' => $request->category,
-        ]);
-        
-        return redirect(route('subcategory.index'))->with('success', 'Added Successfully');
+            'description' => $request->description,
+        ];
+
+        $category->updateOrCreate(['id' => $id], $data);
+        return json_encode(['response' => 'success', 'message' => 'Updated Sucessfully']);
     }
 
-    public function update(Request $request, $id)
+    public function status($id, $status)
     {
-        $subcategory = SubCategory::find($id);
+        $obj = SubCategory::findOrFail($id);
+        if (in_array($status, [0,1])) {
+            $obj->update(['is_active' => $status]);
+            $message = $status == 0 ? 'Disabled' : 'Enabled';
+        } elseif (in_array($status, [2])) {
+            $obj->delete();
+            $message = 'Deleted';
+        }
 
-        $request->validate([
-            'title' => 'required',
-            'category_id' => $request->category,
-        ]);
-
-        $subcategory->update([
-            'title' => $request->title,
-            'category_id' => $request->category,
-        ]);
-
-        return redirect(route('subcategory.index'))->with('success', 'Updated Successfully');
-    }
-
-    public function destroy($id)
-    {
-        $subcategory = SubCategory::find($id);
-        SubCategory::destroy($subcategory->id);
-
-        return redirect(route('subcategory.index'))->with('success', 'Deleted Successfully');
+        return json_encode(['response' => 'success', 'message' => $message.' Sucessfully']);
     }
 }

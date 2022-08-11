@@ -3,258 +3,98 @@
 @section('title', 'Login')
 
 @section('content')
-<style>
-    form.ps-form--account.ps-tab-root {
-    width: 36%;
-}
-@media(max-width:497px){
-     form.ps-form--account.ps-tab-root {
-    width: 83%;
-}
-    
-</style>
-<div class="ps-page--my-account">
+    <style>
+        form.ps-form--account.ps-tab-root {
+            width: 36%;
+        }
 
-    <div class="ps-my-account">
-        <div class="container">
-        <div class="row ps-tab-list " >
-        <div class="col-md-6" style="margin-top: 50px;text-align: end;">
-            <a href="{{ route('login') }}">Login</a>
-        </div>
-        <div class="col-md-6-col" style="margin-top: 50px;"">
-            <a href="{{ route('registerpage') }}" style="color: #f4aa12;" >Register</a>
-        </div>
-        </div>
-            {{-- <ul class="ps-tab-list">
-                <li class="active"></li>
-                <li></li>
-            </ul> --}}
-            <form class="ps-form--account ps-tab-root" action="{{ route('register') }}" method="post">
-                @csrf
+        @media(max-width:497px) {
+            form.ps-form--account.ps-tab-root {
+                width: 83%;
+            }
+        }
+    </style>
+    <div class="ps-page--my-account">
 
-                <div class="ps-tabs">
-
-                    <div class="ps-tab active" id="sign-in">
-                        <div class="ps-form__content">
-                            <h5>Register An Account</h5>
-
-                            <div class="form-group">
-                                <label>Name</label>
-                                <input type="text"  name="name" class="form-control" placeholder="Name" required value="{{ old('name') }}">
-
-                                @error('name')<span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" name="email" class="form-control" placeholder="Email" required  value="{{ old('email') }}">
-
-                                @error('email')<span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                               <div class="form-group">
-                                <label>Phone</label>
-                             	<input type="text" name="phone" id="phone" class="form-control" placeholder="Your Phone" pattern="^[0-9]*$"  required data-error="Phone" required>
-                                        @error('phone')
-                                        <span class="text-danger">{{ $message }}</span>
-                                       @enderror
-                            </div>
-                            
-
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input type="password" name="password" class="form-control" placeholder="Password" required>
-
-                                    @error('password')<span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                            </div>
-                            <div class="form-group">
-
-                                <label>Confirm Password <abbr class="required">*</abbr></label>
-                                    <input type="password" class="form-control" name="password_confirmation" required>
-                            </div>
-
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3">
-                                <center>
-                                <script src='https://www.google.com/recaptcha/api.js'></script>
-                                <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.sitekey') }}" ></div>
-                                @error('g-recaptcha-response')
-                                    <div class="col-12 text-danger text-center">Captcha verification required
-                                    </div>
-                                @enderror
-                            </center>
-                            </div>
-
-                            <div class="form-group submtit">
-                                <button class="ps-btn ps-btn--fullwidth">Register</button>
-                            </div>
-                        </div>
-                        <!--<div class="ps-form__footer">-->
-                        <!--    <p>Connect with:</p>-->
-                        <!--    <ul class="ps-list--social">-->
-                        <!--        <li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>-->
-                        <!--        <li><a class="google" href="#"><i class="fa fa-google-plus"></i></a></li>-->
-                        <!--        <li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>-->
-                        <!--        <li><a class="instagram" href="#"><i class="fa fa-instagram"></i></a></li>-->
-                        <!--    </ul>-->
-                        <!--</div>-->
+        <div class="ps-my-account">
+            <div class="container">
+                <div class="row ps-tab-list ">
+                    <div class="col-md-6" style="margin-top: 50px;text-align: end;">
+                        <a href="{{ route('login') }}">Login</a>
                     </div>
-                </form>
-                {{-- <form class="ps-form--account ps-tab-root" action="{{ route('register') }}" method="post">
-                    @csrf
-                    <div class="ps-tab" id="register">
-                        <div class="ps-form__content">
-                            <h5>Register An Account</h5>
-                            <div class="form-group">
-                                <input type="email" name="email" class="form-control" placeholder="Email" required  value="{{ old('email') }}">
-
-                                @error('email')<span class="text-danger">{{ $message }}</span>
-                                @enderror    </div>
-                            <div class="form-group">
-                                <input type="password" name="password" class="form-control" placeholder="Password" required>
-
-                                @error('password')<span class="text-danger">{{ $message }}</span>
-                                @enderror
-                             </div>
-
-                             <div  class="form-group">
-                              <input type="password" class="form-control"  placeholder=" Confirm Password" name="password_confirmation" required>
-                            </div>
-
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3">
-                                <center>
-                                <script src='https://www.google.com/recaptcha/api.js'></script>
-                                <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.sitekey') }}" ></div>
-                                @error('g-recaptcha-response')
-                                    <div class="col-12 text-danger text-center">Captcha verification required
-                                    </div>
-                                @enderror
-                            </center>
-                            </div>
-                            <div class="form-group submtit">
-                                <button class="ps-btn ps-btn--fullwidth">Login</button>
-                            </div>
-                        </div>
-                        <div class="ps-form__footer">
-                            <p>Connect with:</p>
-                            <ul class="ps-list--social">
-                                <li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
-                                <li><a class="google" href="#"><i class="fa fa-google-plus"></i></a></li>
-                                <li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
-                                <li><a class="instagram" href="#"><i class="fa fa-instagram"></i></a></li>
-                            </ul>
-                        </div>
+                    <div class="col-md-6-col" style="margin-top: 50px;"">
+                        <a href="{{ route('registerpage') }}" style="color: #f4aa12;">Register</a>
                     </div>
-
                 </div>
-            </form> --}}
-        </div>
-    </div>
-</div>
 
+                <form class="ps-form--account ps-tab-root" action="{{ route('register') }}" method="post">
+                    @csrf
+                    <div class="ps-tabs">
+                        <div class="ps-tab active" id="sign-in">
+                            <div class="ps-form__content">
+                                <h5>Register An Account</h5>
 
-{{--
-    <script src='https://www.google.com/recaptcha/api.js' async defer ></script>
-    <!-- Start Profile Authentication Area -->
-    <section class="profile-authentication-area ptb-100" style="padding: 100px;">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 col-md-12">
-                    <div class="login-form">
-                        <h2>Login</h2>
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="text" name="name" class="form-control" placeholder="Name" required
+                                        value="{{ old('name') }}">
+                                    @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
 
-                        <form method="post" action="{{ route('login') }}">
-                            @csrf
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="text"  name="email" class="form-control" placeholder="Email">
-                                @error('email')<span class="text-danger">{{ $message }}</span>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" name="email" class="form-control" placeholder="Email" required
+                                        value="{{ old('email') }}">
+                                    @error('email')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone</label>
+                                    <input type="text" name="phone" id="phone" class="form-control"
+                                        placeholder="Your Phone" pattern="^[0-9]*$" required data-error="Phone" required>
+                                    @error('phone')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" name="password" class="form-control" placeholder="Password"
+                                        required>
+
+                                    @error('password')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+
+                                    <label>Confirm Password <abbr class="required">*</abbr></label>
+                                    <input type="password" class="form-control" name="password_confirmation" required>
+                                </div>
+
+                                {{-- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3">
+                                    <center>
+                                        <script src='https://www.google.com/recaptcha/api.js'></script>
+                                        <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.sitekey') }}">
+                                        </div>
+                                        @error('g-recaptcha-response')
+                                            <div class="col-12 text-danger text-center">Captcha verification required
+                                            </div>
                                         @enderror
-                            </div>
+                                    </center>
+                                </div> --}}
 
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input type="password" name="password" class="form-control" placeholder="Password">
-                                @error('password')<span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                            </div>
-
-                            <div class=" align-items-center">
-                               <!-- <div class="col-lg-6 col-md-6 col-sm-6 remember-me-wrap">
-                                    <p>
-                                        <input type="checkbox" id="test2">
-                                        <label for="test2">Remember me</label>
-                                    </p>
-                                </div>-->
-
-                                <div class="col-lg-12 col-md-12 col-sm-12 lost-your-password-wrap">
-                                    <a href="{{ route('password.request') }}" class="lost-your-password">Lost your password?</a>
+                                <div class="form-group submtit">
+                                    <button class="ps-btn ps-btn--fullwidth">Register</button>
                                 </div>
                             </div>
-
-                           <center> <button  name="login"  style="padding: 10px 20px 10px 20px; background: black;color: white;
-                            border-radius: 16%;"  class="btn-send-contact" type="submit">Log In</button></center>
-                        </form>
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-lg-6 col-md-12">
-                    <div class="register-form">
-                        <h2>Register</h2>
-
-                        <form method="post" action="{{ route('register') }}">
-                            @csrf
-
-
-                            <div class="form-group">
-                                <label>Name</label>
-                                <input type="text"  name="name" class="form-control" placeholder="Name" required value="{{ old('name') }}">
-
-                                @error('name')<span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" name="email" class="form-control" placeholder="Email" required  value="{{ old('email') }}">
-
-                                @error('email')<span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input type="password" name="password" class="form-control" placeholder="Password" required>
-
-                                    @error('password')<span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                            </div>
-                            <div class="form-group">
-
-                                <label>Confirm Password <abbr class="required">*</abbr></label>
-                                    <input type="password" class="form-control" name="password_confirmation" required>
-                            </div>
-
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3">
-                                <center>
-                                <script src='https://www.google.com/recaptcha/api.js'></script>
-                                <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.sitekey') }}" ></div>
-                                @error('g-recaptcha-response')
-                                    <div class="col-12 text-danger text-center">Captcha verification required
-                                    </div>
-                                @enderror
-                            </center>
-                            </div>
-
-                            <center>
-                            <button name="register" style="margin-top: 8px; padding: 10px 20px 10px 20px; background: black; color: white;border-radius: 16%;"  class="btn-send-contact"  type="submit">Register</button>
-                            </center>
-                        </form>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
-    </section> --}}
-
+    </div>
 @endsection

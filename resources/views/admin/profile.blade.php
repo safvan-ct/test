@@ -25,7 +25,7 @@
                                     <img src="{{ asset('/storage/' . $admin->image) }}" alt="Logo">
                                 </div>
                                 <h5 class="user-name text-capitalize">{{ $admin->name }}</h5>
-                                <h6 class="user-email">{{ $admin->username }}</h6>
+                                <h6 class="user-email">{{ $admin->email }}</h6>
                             </div>
                         </div>
                     </div>
@@ -50,17 +50,17 @@
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label>Username</label>
-                                        <input type="text" class="form-control" name="username"
-                                            value="{{ old('username', $admin->username) }}">
-                                        @error('username')<span class="text-danger">{{ $message }}</span>@enderror
+                                        <label>Email</label>
+                                        <input type="text" class="form-control" name="email"
+                                            value="{{ old('email', $admin->email) }}">
+                                        @error('email')<span class="text-danger">{{ $message }}</span>@enderror
                                     </div>
                                 </div>
 
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label>Logo</label>
-                                        <input type="file" class="form-control" name="image">
+                                        <input type="file" class="form-control" name="image" accept="image/*">
                                         @error('image')<span class="text-danger">{{ $message }}</span>@enderror
                                     </div>
                                 </div>

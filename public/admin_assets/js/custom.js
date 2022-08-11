@@ -10,21 +10,13 @@ function alertMessage(type, message) {
     }
 }
 
-function confirmStatusModal(id, status, datatable_id) {
-    var url = "";
-    if (status == 0 || status == 1 || status == 2) {
-        url = $("." + datatable_id + "_status").html();
-        url = url.replace(/ID/g, id);
-        url = url.replace(/STATUS/g, status);
-    } else {
-        return false;
-    }
+function confirmStatusModal(status, url, msg = '') {
 
-    var text = "Are you sure, you want to disable?";
+    var text = msg == '' ? "Are you sure, you want to enable?" : msg;
     if (status == 1) {
-        text = "Are you sure, you want to enable?";
+        text = msg == '' ? "Are you sure, you want to disable?" : msg;
     } else if (status == 2) {
-        text = "Are you sure, you want to delete?";
+        text = msg == '' ? "Are you sure, you want to delete?" : msg;
     }
 
     Swal.fire({
@@ -52,15 +44,11 @@ function confirmStatusModal(id, status, datatable_id) {
                     } else {
                         alertMessage("error", data.message, 15);
                     }
-
-                    $("#" + datatable_id)
-                        .DataTable()
-                        .draw(false);
-                    loader(false);
+                    results();
                 },
                 error: function(data) {
                     errorHandler(data);
-                    loader(false);
+                    results();
                 },
             });
         }

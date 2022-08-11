@@ -28,11 +28,11 @@
                         <form  action="{{ route('admin.login') }}" method="post">
                             @csrf
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Username" name="username" value="{{ old('username') }}" required>
-                                @error('username')<span class="text-danger">{{ $message }}</span>@enderror
+                                <input type="text" class="form-control" placeholder="Email" name="email" value="admin@email.com" required>
+                                @error('email')<span class="text-danger">{{ $message }}</span>@enderror
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Password" name="password" value="{{ old('password') }}" required>
+                                <input type="password" class="form-control" placeholder="Password" name="password" value="123456" required>
                                 @error('password')<span class="text-danger">{{ $message }}</span>@enderror
                             </div>
 

@@ -4,43 +4,50 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Admin;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
+    public $active = '';
+    public $active_sub = '';
+
     public function index()
     {
-        $id = auth()->guard('admin')->user()->id;
-        $admin = Admin::find($id);
-        return view('admin/profile', compact('admin'));
+        $id = auth()->user()->id;
+        $admin = User::find($id);
+        return view('admin.profile')
+            ->with('admin', $admin)
+            ->with('active', $this->active)
+            ->with('active_sub', $this->active_sub);
     }
 
     public function store(Request $request)
     {
-        $id = auth()->guard('admin')->user()->id;
-        $admin = Admin::find($id);
+        $id = auth()->user()->id;
+        $admin = User::find($id);
 
         $request->validate([
             'name' => 'required',
-            'username' => 'required',
+            'email' => 'required',
         ]);
 
         if ($request->hasFile('image')) {
             $request->validate(['image' => 'mimes:jpg,jpeg,png']);
-            Storage::delete('/public/'.$admin->image);
+            Storage::delete('/public/' . $admin->image);
 
-            $filename = time().'.'.$request->file('image')->extension();
+            $filename = time() . '.' . $request->file('image')->extension();
             $request->image->storeAs('uploads/admin/', $filename, 'public');
-            $filename = 'uploads/admin/'.$filename;
+            $filename = 'uploads/admin/' . $filename;
         } else {
             $filename = $admin->image;
         }
 
         $admin->update([
             'name' => $request->name,
-            'username' => $request->username,
+            'email' => $request->email,
             'image' => $filename,
         ]);
 
@@ -49,15 +56,18 @@ class ProfileController extends Controller
 
     public function edit($id)
     {
-        $id = auth()->guard('admin')->user()->id;
-        $admin = Admin::find($id);
-        return view('admin/password-change', compact('admin'));
+        $id = auth()->user()->id;
+        $admin = User::find($id);
+        return view('admin.password-change')
+            ->with('admin', $admin)
+            ->with('active', $this->active)
+            ->with('active_sub', $this->active_sub);
     }
 
     public function update(Request $request, $id)
     {
-        $id = auth()->guard('admin')->user()->id;
-        $admin = Admin::find($id);
+        $id = auth()->user()->id;
+        $admin = User::find($id);
 
         if (Hash::check($request->current_password, $admin->password)) {
             $request->validate([
@@ -70,9 +80,8 @@ class ProfileController extends Controller
                 'password' => Hash::make($request->password),
             ]);
             return redirect(route('profile.edit', $id))->with('success', 'Password changed successfully');
-        }
-        else {
-            return redirect(route('profile.edit', $id))->with('error', 'Current passwor not matching');
+        } else {
+            return redirect(route('profile.edit', $id))->with('error', 'Current password not matching');
         }
     }
 }

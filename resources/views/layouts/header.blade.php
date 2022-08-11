@@ -94,11 +94,11 @@
 				<div class="mini-cart">
 
 				    @auth
-                     	<a class="cart-link" href="{{ route('cart') }}" ><span class="pe-7s-cart" style="color: #cc0088;padding: 13px;"></span> <span class="count">[{{ count((array) session('cart')) }}]</span></a>
+                     	<a class="cart-link" href="{{ route('cart') }}" ><span class="pe-7s-cart" style="color: #cc0088;padding: 13px;"></span> <span class="count">[{{ cartCount() }}]</span></a>
 					 @endauth
 
 					   @guest
-                	<a class="cart-link" href="{{ route('login') }}"><span class="pe-7s-cart" style="color: #cc0088;padding: 13px;"></span> <span class="count">[{{ count((array) session('cart')) }}]</span></a>
+                	<a class="cart-link" href="{{ route('login') }}"><span class="pe-7s-cart" style="color: #cc0088;padding: 13px;"></span> <span class="count">[{{ cartCount() }}]</span></a>
 
                 @endguest
 					<!--<div class="show-shopping-cart">-->

@@ -9,8 +9,11 @@ class AdminAuth
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->guard('admin')->check()) {
+        if (!auth()->check()) {
             return redirect('admin');
+        }
+        if (!isset(auth()->user) && auth()->user()->role_id != 1) {
+            return redirect('admin')->with('error', 'Invalid username or password');
         }
         return $next($request);
     }

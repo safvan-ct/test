@@ -3,77 +3,42 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin\Account;
-use App\Models\Admin\Brand;
-use App\Models\Admin\Category;
-use App\Models\Admin\Game;
-use App\Models\Admin\Review;
+use App\Models\Order;
 use App\Models\User;
-use App\Models\UserOrder;
 
 class AdminHomeController extends Controller
 {
     public $active = 'dashboard';
     public $active_sub = '';
 
-    public function index($home = null)
+    public function index()
     {
-        if ($home == '') {
-            $totals = UserOrder::where('status', "delivered")->get();
-            $totalsales = 0;
-            foreach ($totals as $total) {
-                $t = $total->pay_amount;
-                $totalsales = $totalsales + $t;
+        $orders = Order::where('order_status', 3)->get();
+        $totalsales = 0;
+        $todaytotalsales = 0;
+
+        foreach ($orders as $item) {
+            $total = $item->paid_amount;
+            $totalsales = $totalsales + $total;
+
+            if (date('d-m-y', strtotime($item->date)) == date('d-m-y')) {
+                $t = $item->pay_amount;
+                $itemsales = $todaytotalsales + $t;
             }
-
-            $todaytotals = UserOrder::where('status', "delivered")->get();
-            $todaytotalsales = 0;
-            foreach ($todaytotals as $todaytotal) {
-                if (date('d-m-y', strtotime($todaytotal->date)) == date('d-m-y')) {
-                    $t = $todaytotal->pay_amount;
-                    $todaytotalsales = $todaytotalsales + $t;
-                }
-
-            }
-
-            $count = [
-                'neworder' => UserOrder::where('status', "new")->count(),
-                'shippedorder' => UserOrder::where('status', "shipped")->count(),
-                'deliveredorder' => UserOrder::where('status', "delivered")->count(),
-                'totalsales' => $totalsales,
-                'todaytotalsales' => $todaytotalsales,
-                'user' => User::count(),
-            ];
-            return view('admin.home')
-                ->with('count', $count)
-                ->with('active', $this->active)
-                ->with('active_sub', $this->active_sub);
         }
 
-        if ($home == 'web') {
-            $count = [
-
-            ];
-            return view('admin.home-web')
-                ->with('count', $count)
-                ->with('active', $this->active)
-                ->with('active_sub', $this->active_sub);
-        }
-
-        if ($home == 'product') {
-            $count = [
-                'category' => Category::count(),
-                'brand' => Brand::count(),
-                'accounts' => Account::count(),
-                'game' => Game::count(),
-                'reviews' => Review::count(),
-
-            ];
-            return view('admin.home-product')
-                ->with('count', $count)
-                ->with('active', $this->active)
-                ->with('active_sub', $this->active_sub);
-        }
+        $count = [
+            'neworder' => Order::where('order_status', 1)->count(),
+            'shippedorder' => Order::where('order_status', 2)->count(),
+            'deliveredorder' => Order::where('order_status', 3)->count(),
+            'totalsales' => $totalsales,
+            'todaytotalsales' => $todaytotalsales,
+            'users' => User::count(),
+        ];
+        return view('admin.home')
+            ->with('count', $count)
+            ->with('active', $this->active)
+            ->with('active_sub', $this->active_sub);
 
     }
 }

@@ -2,114 +2,110 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Admin\Account;
+use App\Models\Cart;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     public function cart()
     {
-        return view('cart');
-    }
+        $cart_items = [];
+        if (auth()->check() && auth()->user()->role_id == 2) {
+            if (session('cart')) {
+                foreach (session('cart') as $id => $data) {
+                    $cart = Cart::where('user_id', auth()->user()->id)->where('product_id', $id)->first();
+                    $cart = is_null($cart) ? new Cart : $cart;
+                    $data['user_id'] = auth()->user()->id;
+                    unset($data['id']);
+                    $cart->updateOrCreate(['id' => $cart->id], $data);
+                }
+            }
 
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
-    public function addToCart($id)
-    {
-        $product = Account::find($id);
-
-        $cart = session()->get('cart', []);
-
-        if(isset($cart[$id])) {
-            // $cart[$id]['quantity']++;
-            $cart[$id]['quantity']=$cart[$id]['quantity'];
-        } else {
-            $cart[$id] = [
-                "id" => $product->id,
-                "name" => $product->name,
-                "quantity" => 1,
-                "price" => $product->offer_rate,
-                "image" => $product->image
-            ];
+            $cart_items = Cart::where('user_id', auth()->user()->id)->get()->toArray();
+        } else if (session('cart')) {
+            $cart_items = session('cart');
         }
 
-        session()->put('cart', $cart);
+        return view('cart')->with('cart_items', $cart_items);
+    }
+
+    public function addToCartPost(Request $request, $id)
+    {
+        $quantity = $request->quantity;
+        $product_id = $id;
+        return self::addToCart($product_id, $quantity);
+    }
+    public function addToCart($id, $quantity = 1)
+    {
+        $product = Product::find($id);
+
+        $data = [
+            "id" => 0,
+            "user_id" => 0,
+            "product_id" => $product->id,
+            "product_qty" => $quantity,
+            "product_price" => $product->offer_price,
+            "discount" => 0,
+            "total" => $product->offer_price,
+        ];
+
+        if (auth()->check() && auth()->user()->role_id == 2) {
+            $cart = Cart::where('user_id', auth()->user()->id)->where('product_id', $product->id)->first();
+            $cart = is_null($cart) ? new Cart : $cart;
+            $data['user_id'] = auth()->user()->id;
+            $cart->updateOrCreate(['id' => $cart->id], $data);
+        }
+
+        if (!auth()->check()) {
+            $cart = session()->get('cart', []);
+            if (!isset($cart[$id])) {
+                $cart[$id] = $data;
+            }
+            session()->put('cart', $cart);
+        }
 
         return redirect()->back()->with('status', 'Product added to cart successfully!');
     }
 
-    public function adddetailToCart( Request $request,$id)
-    {
-        $product = Account::find($id);
-         $quantity=$request->quantity;
-        $cart = session()->get('cart', []);
-
-        if(isset($cart[$id])) {
-            $cart[$id]['quantity']=$quantity;
-        } else {
-            $cart[$id] = [
-                "id" => $product->id,
-                "name" => $product->name,
-                "quantity" =>$quantity,
-                "price" => $product->rate,
-                "image" => $product->image
-            ];
-        }
-
-        session()->put('cart', $cart);
-        return redirect()->back()->with('status', 'Product added to cart successfully!');
-  
-    }
-
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
     public function update(Request $request)
     {
-        if($request->id && $request->quantity){
-            $cart = session()->get('cart');
-            $cart[$request->id]["quantity"] = $request->quantity;
-            session()->put('cart', $cart);
+        if ($request->id && $request->quantity) {
+            if (auth()->check() && auth()->user()->role_id == 2) {
+                $cart = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->id)->first();
+                if(!is_null($cart)) {
+                    $data = ['product_qty' => $request->quantity];
+                    $cart->updateOrCreate(['id' => $cart->id], $data);
+                }
+            }
+            else {
+                $cart = session()->get('cart');
+                $cart[$request->id]["product_qty"] = $request->quantity;
+                session()->put('cart', $cart);
+            }
+
             session()->flash('success', 'Cart updated successfully');
         }
     }
 
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
     public function remove(Request $request)
     {
-
-        if($request->id) {
-
-            $cart = session()->get('cart');
-            if(isset($cart[$request->id])) {
-
-                unset($cart[$request->id]);
-                session()->put('cart', $cart);
+        if ($request->id) {
+            if (auth()->check() && auth()->user()->role_id == 2) {
+                $cart = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->id)->first();
+                if(!is_null($cart)) {
+                    $cart->delete();
+                }
             }
-            session()->flash('success', 'Product removed successfully');
+            else {
+                $cart = session()->get('cart');
+                if (isset($cart[$request->id])) {
+                    unset($cart[$request->id]);
+                    session()->put('cart', $cart);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Product removed from cart successfully!');
         }
-        return redirect()->back()->with('success', 'Product added to cart successfully!');
     }
-
-
-
-  }
+}

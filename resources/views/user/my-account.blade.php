@@ -4,12 +4,12 @@
 
 @section('content')
 
-<div class="page-banner contact-banner" style="background-image: url({{asset('/storage/images/contactbg.jpg')}});">
-    <div class="banner-content">
-        <!--<span class="subtitle">We’re here to make you feel happy!</span>-->
-        <!--<h2 class="title">Boutique</h2>-->
+    <div class="page-banner contact-banner" style="background-image: url({{ asset('/storage/images/contactbg.jpg') }});">
+        <div class="banner-content">
+            <!--<span class="subtitle">We’re here to make you feel happy!</span>-->
+            <!--<h2 class="title">Boutique</h2>-->
+        </div>
     </div>
-</div>
 
     <!-- Page Title/Header Start -->
     <div class="page-title-section section" data-bg-image="{{ asset('storage/images/banner.jpg') }}">
@@ -148,7 +148,7 @@
 
                                             <a href=""
                                                 onclick="event.preventDefault();document.getElementById('address-form').submit();" class="mt-2 btn btn-outline btn-outline-hover-dark" style="line-height: 4px; border-color: #333333;">
-                                                Delete 
+                                                Delete
                                             </a>
 
                                             <form id="address-form" action="{{ route('address.destroy', $data->id ) }}" method="POST" class="d-none">
@@ -177,22 +177,21 @@
 
                                                 <div class="row learts-mb-n30">
                                                     <div class="col-md-6 col-12 learts-mb-30">
-                                                        <input type="text" placeholder="Your Name *" name="name" required
-                                                            value="{{ $data->name }}">
+                                                        <input type="text" placeholder="Your Name *" name="name"
+                                                            required value="{{ $data->name }}">
                                                         @error('name')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
                                                     </div>
                                                     <div class="col-md-6 col-12 learts-mb-30">
-                                                        <input type="number" min="10" placeholder="Mobile *" name="phone"
-                                                            required value="{{ $data->phone }}">
+                                                        <input type="number" min="10" placeholder="Mobile *"
+                                                            name="phone" required value="{{ $data->phone }}">
                                                         @error('phone')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
                                                     </div>
                                                     <div class="col-12 learts-mb-30">
-                                                        <textarea name="address" placeholder="Address *"
-                                                            required>{{ $data->address }}</textarea>
+                                                        <textarea name="address" placeholder="Address *" required>{{ $data->address }}</textarea>
                                                         @error('address')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
@@ -224,14 +223,15 @@
 
                                             <div class="row learts-mb-n30">
                                                 <div class="col-md-6 col-12 learts-mb-30">
-                                                    <input type="text" placeholder="Your Name *" name="name" required>
+                                                    <input type="text" placeholder="Your Name *" name="name"
+                                                        required>
                                                     @error('name')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
                                                 <div class="col-md-6 col-12 learts-mb-30">
-                                                    <input type="number" min="10" placeholder="Mobile *" name="phone"
-                                                        required>
+                                                    <input type="number" min="10" placeholder="Mobile *"
+                                                        name="phone" required>
                                                     @error('phone')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
@@ -267,8 +267,9 @@
                                                     <label>Name <abbr class="required">*</abbr></label>
                                                     <input type="text" name="name" required
                                                         value="{{ auth()->user()->name }}">
-                                                    @error('name')<span
-                                                        class="text-danger">{{ $message }}</span>@enderror
+                                                    @error('name')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                                 </div>
                                             </div>
 
@@ -277,8 +278,9 @@
                                                     <label>Mobile <abbr class="required">*</abbr></label>
                                                     <input type="text" name="phone" required
                                                         value="{{ auth()->user()->phone }}">
-                                                    @error('phone')<span
-                                                        class="text-danger">{{ $message }}</span>@enderror
+                                                    @error('phone')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
                                                 </div>
                                             </div>
 
@@ -295,16 +297,18 @@
                                                             <label>Current password</label>
                                                             <input type="password" name="current_password"
                                                                 autocomplete="new-password">
-                                                            @error('current_password')<span
-                                                                class="text-danger">{{ $message }}</span>@enderror
+                                                            @error('current_password')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
                                                         </div>
 
                                                         <div class="col-12 learts-mb-30">
                                                             <label>New password</label>
                                                             <input type="password" autocomplete="new-password"
                                                                 name="password">
-                                                            @error('password')<span
-                                                                class="text-danger">{{ $message }}</span>@enderror
+                                                            @error('password')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
                                                         </div>
 
                                                         <div class="col-12 learts-mb-30">

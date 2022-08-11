@@ -22,7 +22,7 @@
                         <div class="account-settings">
                             <div class="user-profile">
                                 <div class="user-avatar">
-                                    <img src="{{ asset('/storage/'.$admin->image) }}" alt="Logo">
+                                    <img src="{{ asset('/storage/' . $admin->image) }}" alt="Logo">
                                 </div>
                                 <h5 class="user-name text-capitalize">{{ $admin->name }}</h5>
                                 <h6 class="user-email">{{ $admin->username }}</h6>
@@ -34,7 +34,8 @@
             <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
                 <div class="card h-100">
                     <div class="card-body">
-                        <form action="{{ route('profile.update', $admin->id ) }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ route('profile.update', $admin->id) }}" method="post"
+                            enctype="multipart/form-data">
                             @csrf @method('put')
                             <div class="row gutters">
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
@@ -44,8 +45,11 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label>Current Password</label>
-                                        <input type="password" class="form-control" name="current_password" autocomplete="off">
-                                        @error('current_password')<span class="text-danger">{{ $message }}</span>@enderror
+                                        <input type="password" class="form-control" name="current_password"
+                                            autocomplete="off">
+                                        @error('current_password')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                 </div>
 
@@ -53,15 +57,20 @@
                                     <div class="form-group">
                                         <label>New Password</label>
                                         <input type="password" class="form-control" name="password" autocomplete="off">
-                                        @error('password')<span class="text-danger">{{ $message }}</span>@enderror
+                                        @error('password')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-12 col-md-6">
                                     <div class="form-group">
                                         <label>Confirm Password</label>
-                                        <input type="password" class="form-control" name="confirm_password" autocomplete="off"> 
-                                        @error('confirm_password')<span class="text-danger">{{ $message }}</span>@enderror
+                                        <input type="password" class="form-control" name="confirm_password"
+                                            autocomplete="off">
+                                        @error('confirm_password')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                 </div>
 
